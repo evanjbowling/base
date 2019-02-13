@@ -3,5 +3,5 @@ All notable changes to this project will be documented in this file. This change
 
 ## [Unreleased]
 ### Added
-- Add `to_base` function
+- Add `to-base` function
 
