@@ -5,6 +5,7 @@
   :plugins      [[lein-cljfmt "0.6.4"]]
   :dependencies [[org.clojure/clojure            "1.8.0"]
                  [org.clojure/math.numeric-tower "0.0.4"]]
+  :aliases {"lint" ["cljfmt"]}
   :target-path "target/%s"
   :repl-options {:init-ns com.evanjbowling.base}
   :global-vars {*warn-on-reflection* true}

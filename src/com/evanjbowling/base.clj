@@ -1,6 +1,6 @@
 (ns com.evanjbowling.base
   (:require
-    [clojure.math.numeric-tower :as math]))
+   [clojure.math.numeric-tower :as math]))
 
 (defn ^:private parts
   "Split a decimal into integer and fraction parts"
@@ -74,15 +74,15 @@
    to other base. First form extracts 10 digits.
   Second form extracts n digits."
   ([d base]
-    (fraction-to-base d base 10))
+   (fraction-to-base d base 10))
   ([d base num-digits]
-    (loop [n 0
-           result (if (= 0M d) "0" "")
-           left d]
-      (if (or (= 0M left) (= n num-digits))
-        {:value result, :remainder left}
-        (let [[i f] (parts (*' base left))]
-          (recur (inc n) (str result (map-digit i)) f))))))
+   (loop [n 0
+          result (if (= 0M d) "0" "")
+          left d]
+     (if (or (= 0M left) (= n num-digits))
+       {:value result, :remainder left}
+       (let [[i f] (parts (*' base left))]
+         (recur (inc n) (str result (map-digit i)) f))))))
 
 (defn to-base
   "Convert decimal value into another base

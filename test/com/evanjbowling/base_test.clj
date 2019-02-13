@@ -1,7 +1,7 @@
 (ns com.evanjbowling.base-test
   (:require
-    [clojure.test          :refer [deftest testing is are]]
-    [com.evanjbowling.base :as b]))
+   [clojure.test          :refer [deftest testing is are]]
+   [com.evanjbowling.base :as b]))
 
 (deftest test-int-to-base*
   (testing "base 2"
@@ -55,7 +55,7 @@
     1.25M 12 "1.3"
     1.25M 16 "1.4"
     1.25M 3  "1.0202020202"
-    
+
     1.23456M 5  "1.10413"
     1.23456M 2  "1.0011110000"
     1.23456M 4  "1.0330003001"
