@@ -13,7 +13,7 @@ via Leiningen:
 
 ## Usage
 
-```
+```clojure
 (require '[com.evanjbowling.base :as b])
 (b/to-base 16.25M 2)
 ;=> "10000.01"
