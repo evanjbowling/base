@@ -18,7 +18,12 @@
     (is (= {1 1} (#'b/int-to-base* 16 16)))
     (is (= {1 1} (#'b/int-to-base* 17 16)))
     (is (= {1 15} (#'b/int-to-base* 255 16)))
-    (is (= {2 1} (#'b/int-to-base* 256 16)))))
+    (is (= {2 1} (#'b/int-to-base* 256 16))))
+  (testing "type handling"
+    (is (= {0 11} (#'b/int-to-base* 11N 16)))
+    (is (= {0 11} (#'b/int-to-base* 11 16M)))
+    (is (= {0 11} (#'b/int-to-base* 11N 16N)))
+    (is (= {15 8} (#'b/int-to-base* (+' Long/MAX_VALUE 1) 16)))))
 
 (deftest test-int-to-base
   (is (= "0" (#'b/int-to-base 0 16)))
@@ -45,6 +50,15 @@
   (testing "base 2"
     (is (= "100000000000000000000.0"
            (b/to-base 1048576M 2)))))
+
+(deftest test-input-handling
+  (are [d base expected] (= expected (b/to-base d base))
+    1.25 16 "1.4"
+    1.25 16M "1.4"
+    1.25M 16M "1.4"
+    (int 12) 16 "c.0"
+    (long 12) 16 "c.0"
+    (short 12) 16 "c.0"))
 
 (deftest test-to-base-hand-verified
   (are [d base expected] (= expected (b/to-base d base))

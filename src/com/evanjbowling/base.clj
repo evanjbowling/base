@@ -88,7 +88,9 @@
   "Convert decimal value into another base
   representation."
   [d base]
-  (let [[i f] (parts d)]
+  (let [d (bigdec d)
+        base (long base)
+        [i f] (parts d)]
     (format "%s.%s"
             (int-to-base i base)
             (:value (fraction-to-base f base)))))
