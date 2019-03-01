@@ -10,4 +10,7 @@
   :target-path "target/%s"
   :repl-options {:init-ns com.evanjbowling.base}
   :global-vars {*warn-on-reflection* true}
-  :profiles {:uberjar {}})
+  :profiles 
+    {:uberjar {}
+     :dev 
+       {:dependencies [[org.clojure/tools.namespace "0.2.11"]]}})
