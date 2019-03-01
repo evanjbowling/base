@@ -2,7 +2,8 @@
   :description "arbitrary-precision conversion of decimal representations"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :plugins      [[lein-cljfmt "0.6.4"]]
+  :plugins      [[lein-cljfmt    "0.6.4"]
+                 [lein-cloverage "1.0.13"]]
   :dependencies [[org.clojure/clojure            "1.8.0"]
                  [org.clojure/math.numeric-tower "0.0.4"]]
   :aliases {"lint" ["cljfmt"]}
