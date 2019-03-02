@@ -3,61 +3,6 @@
    [clojure.test          :refer [deftest testing is are]]
    [com.evanjbowling.base :as b]))
 
-(deftest test-int-to-base*
-  (testing "base 2"
-    (are [i base expect] (= expect (#'b/int-to-base* i base))
-      0 2 {0 0}
-      1 2 {0 1}
-      2 2 {1 1}
-      3 2 {1 1}
-      4 2 {2 1}
-      11 2 {3 1}))
-  (testing "base 16"
-    (is (= {0 11} (#'b/int-to-base* 11 16)))
-    (is (= {0 12} (#'b/int-to-base* 12 16)))
-    (is (= {1 1} (#'b/int-to-base* 16 16)))
-    (is (= {1 1} (#'b/int-to-base* 17 16)))
-    (is (= {1 15} (#'b/int-to-base* 255 16)))
-    (is (= {2 1} (#'b/int-to-base* 256 16))))
-  (testing "type handling"
-    (is (= {0 11} (#'b/int-to-base* 11N 16)))
-    (is (= {0 11} (#'b/int-to-base* 11 16M)))
-    (is (= {0 11} (#'b/int-to-base* 11N 16N)))
-    (is (= {15 8} (#'b/int-to-base* (+' Long/MAX_VALUE 1) 16)))))
-
-(deftest test-int-to-base
-  (is (= [0] (#'b/int-to-base 0 16)))
-  (is (= [11] (#'b/int-to-base 11 16)))
-  (is (= [15] (#'b/int-to-base 15 16)))
-  (is (= [1 0] (#'b/int-to-base 16 16)))
-  (is (= [1 0 2] (#'b/int-to-base 258 16)))
-  #_(testing "base less than 2 throws"
-      (is (thrown? AssertionError (#'b/int-to-base 13 -1)))
-      (is (thrown? AssertionError (#'b/int-to-base 13 0)))
-      (is (thrown? AssertionError (#'b/int-to-base 13 1)))))
-
-(deftest test-fraction-to-base
-  (is (= [0] (take 10 (#'b/fraction-to-base 0.0M 2))))
-  (is (= [1] (take 10 (#'b/fraction-to-base 0.5M 2))))
-  (is (= [0 1] (take 10 (#'b/fraction-to-base 0.25M 2))))
-  (is (= [4] (take 10 (#'b/fraction-to-base 0.25M 16))))
-  (is (= [1 9 9 9 9 9 9 9 9 9] (take 10 (#'b/fraction-to-base 0.1M 16)))))
-
-(deftest test-to-base
-  (testing "base 2"
-    (is (= "100000000000000000000.0"
-           (b/to-base 1048576M 2)))))
-
-(deftest test-input-handling
-  (let [opts {::b/digit-mappings "0123456789abcdef"}]
-    (are [d base expected] (= expected (b/to-base d base opts))
-      1.25 16 "1.4"
-      1.25 16M "1.4"
-      1.25M 16M "1.4"
-      (int 12) 16 "c.0"
-      (long 12) 16 "c.0"
-      (short 12) 16 "c.0")))
-
 (deftest test-to-base-seq-hand-verified
   (are [d base expected]
        (= expected (b/to-base-seq d base))
@@ -68,6 +13,22 @@
     1.25M 10 [[1] [2 5]]
     1.25M 12 [[1] [3]]
     1.25M 16 [[1] [4]]))
+
+(deftest test-to-base
+  (testing "base 2"
+    (is (= "100000000000000000000.0"
+           (b/to-base 1048576M 2)
+           (b/to-base2 1048576M)))))
+
+(deftest test-input-handling
+  (let [opts {::b/digit-mappings "0123456789abcdef"}]
+    (are [d base expected] (= expected (b/to-base d base opts))
+      1.25 16 "1.4"
+      1.25 16M "1.4"
+      1.25M 16M "1.4"
+      (int 12) 16 "c.0"
+      (long 12) 16 "c.0"
+      (short 12) 16 "c.0")))
 
 (deftest test-to-base-hand-verified
   (let [opts {::b/digit-mappings "0123456789abcdef"}]
