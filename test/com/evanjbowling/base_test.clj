@@ -58,6 +58,17 @@
       (long 12) 16 "c.0"
       (short 12) 16 "c.0")))
 
+(deftest test-to-base-seq-hand-verified
+  (are [d base expected]
+       (= expected (b/to-base-seq d base))
+
+    1.25M 2  [[1] [0 1]]
+    1.25M 4  [[1] [1]]
+    1.25M 8  [[1] [2]]
+    1.25M 10 [[1] [2 5]]
+    1.25M 12 [[1] [3]]
+    1.25M 16 [[1] [4]]))
+
 (deftest test-to-base-hand-verified
   (let [opts {::b/digit-mappings "0123456789abcdef"}]
     (are [d base expected] (= expected (b/to-base d base opts))

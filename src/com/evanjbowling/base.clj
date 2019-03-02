@@ -87,33 +87,32 @@
                   []
                   (fraction-to-base f base))))))))
 
-(defn ^:private map-fraction
-  "Map up to max digits of the fractional value sequence."
-  [max mapping s]
-  (->> (take max s)
-       (map (partial nth mapping))))
-
-(defn ^:private map-integer
-  "Map digits of the integer value sequence."
-  [mapping s]
-  (map (partial nth mapping) s))
+(defn to-base-seq
+  "Convert decimal value to other base representation
+  as a pair of sequences: a seq of values for the 
+  integer and a seq of values for the fraction. Note
+  that the fraction sequence may be an infinite
+  sequence."
+  [d base]
+  (let [d (bigdec d)
+        base (long base)
+        {i ::integer, f ::fraction} (split'  d)]
+    [(int-to-base i base) (fraction-to-base f base)]))
 
 (defn to-base
-  "Convert decimal value into another base
-  representation."
+  "Convert decimal value to other base representation."
   ([d base]
    (to-base d base {}))
   ([d base opts]
    (let [ms (or (::max-scale opts) 10)
-         ds (or (::decimal-separator opts) \.)
-         dm (or (::digit-mapping opts) "0123456789abcdef")
-         d (bigdec d)
-         base (long base)
-         {i ::integer, f ::fraction} (split' d)]
-     (string/join ""
-                  (concat (map-integer dm (int-to-base i base))
-                          [ds]
-                          (map-fraction ms dm (fraction-to-base f base)))))))
+         rs (or (::radix-separator opts) \.)
+         mapval (->> (or (::digit-mapping opts)
+                         "0123456789abcdef")
+                     (partial nth))
+         [i f] (to-base-seq d base)]
+     (->> [(map mapval i) [rs] (map mapval (take ms f))]
+          (apply concat)
+          (string/join "")))))
 
 ;;
 ;; convenience fns
