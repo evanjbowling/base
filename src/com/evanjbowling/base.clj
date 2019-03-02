@@ -1,7 +1,8 @@
 (ns com.evanjbowling.base
   (:require
-   [clojure.math.numeric-tower :as math]
-   [clojure.string             :as string])
+   [clojure.math.numeric-tower   :as math]
+   [clojure.string               :as string]
+   [com.evanjbowling.base.format :as fmt])
   (:import
    (java.math BigDecimal)))
 
@@ -118,37 +119,23 @@
 ;; convenience fns
 ;;
 
-(def O-9 "0123456789")
-(def a-z "abcdefghijklmnopqrstuvwxyz")
-(def A-Z "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-
-(def base2 "01")
-(def base8 "01234567")
-(def base16 (str O-9 "ABCDEF"))
-(def base32 (str A-Z "234567"))
-(def base32hex (subs (str O-9 A-Z) 0 32))
-(def base36 (str O-9 A-Z))
-(def base58 "No 0,I,O,l" "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
-(def base64 (str A-Z a-z O-9 "+/"))
-(def base64url (str A-Z a-z O-9 "-_"))
-
 (defn to-base2
   "Convert decimal to binary string representation.
   Second form takes options map. See to-base for details."
   ([d] (to-base2 d {}))
-  ([d opts] (to-base d 2 (assoc opts ::digit-mapping base2))))
+  ([d opts] (to-base d 2 (assoc opts ::digit-mapping fmt/base2))))
 
 (defn to-base8
   "Convert decimal to octal string representation.
   Second form takes options map. See to-base for details."
   ([d] (to-base8 d {}))
-  ([d opts] (to-base d 2 (assoc opts ::digit-mapping base8))))
+  ([d opts] (to-base d 8 (assoc opts ::digit-mapping fmt/base8))))
 
 (defn to-base16
   "Convert decimal to hexadecimal string representation.
   Second form takes options map. See to-base for details."
   ([d] (to-base16 d {}))
-  ([d opts] (to-base d 16 (assoc opts ::digit-mapping base16))))
+  ([d opts] (to-base d 16 (assoc opts ::digit-mapping fmt/base16))))
 
 (defn to-base32
   "Convert decimal to base 32 string representation.
@@ -157,4 +144,4 @@
   While RFC details encoding process for binary data,
   only the alphabet is used here."
   ([d] (to-base32 d {}))
-  ([d opts] (to-base d 32 (assoc opts ::digit-mapping base32))))
+  ([d opts] (to-base d 32 (assoc opts ::digit-mapping fmt/base32))))
