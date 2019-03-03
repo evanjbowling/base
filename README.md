@@ -4,6 +4,13 @@
 
 A tiny Clojure library for converting decimals to different base representations.
 
+## Quick Start
+
+```bash
+clj -Sdeps '{:deps {com.evanjbowling/base {:mvn/version "0.1.0"}}}' \
+    -e "(require '[com.evanjbowling.base :as b])(b/to-base 1234567.8901M 13)"
+```
+
 ## Install
 
 via Leiningen:
@@ -42,6 +49,8 @@ Custom digit mapping:
 
 ## TODO
 
+* review convenience fns, add common name aliases
+* proper docs
 * review rational support
 * document and expand options map with formatting options (add sequence format)
 * repeating fractional sequence detection
