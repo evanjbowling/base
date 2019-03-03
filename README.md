@@ -46,6 +46,10 @@ Custom digit mapping:
 * document and expand options map with formatting options (add sequence format)
 * repeating fractional sequence detection
 
+## Dedicate
+
+This library is dedicated to the second sentence of the second paragraph of sections 5.1 and 5.2 on page 11 of rfc6234.
+
 ## License
 
 Copyright © 2019 Evan Bowling
