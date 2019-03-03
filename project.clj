@@ -1,4 +1,4 @@
-(defproject com.evanjbowling/base "0.1.0-SNAPSHOT"
+(defproject com.evanjbowling/base "0.1.1-SNAPSHOT"
   :description "arbitrary-precision conversion of decimal representations"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
