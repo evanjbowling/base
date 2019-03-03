@@ -10,6 +10,10 @@ A tiny Clojure library for converting decimals to different base representations
 clj -Sdeps '{:deps {com.evanjbowling/base {:mvn/version "0.1.0"}}}' \
     -e "(require '[com.evanjbowling.base :as b])(b/to-base 1234567.8901M 13)"
 ```
+Output:
+```bash
+"342C19.B7571B8C9B₁₃"
+```
 
 ## Install
 
