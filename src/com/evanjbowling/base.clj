@@ -16,20 +16,31 @@
         {i ::integer, f ::fraction} (c/split'  d)]
     [(c/int-to-base i base) (c/fraction-to-base f base)]))
 
+;; TODO: sequence-str
+
+(defn ^:private position-str
+  [d base opts]
+  (let [ms (or (::max-scale opts) 10)
+         rs (or (::radix-separator opts) \.)
+         bi (or (::base-indicator opts) :suffix)
+         mapval (->> (or (::digit-mapping opts)
+                         (fmt/digit-mapping base))
+                     (partial nth))
+         [i f] (to-base-seq d base)]
+     (->> [(map mapval i) 
+           [rs]
+           (map mapval (take ms f))
+           (when (= :suffix bi) [(fmt/sub base)])]
+          (remove nil?)
+          (apply concat)
+          (string/join ""))))
+
 (defn to-base
   "Convert decimal value to other base representation."
   ([d base]
    (to-base d base {}))
   ([d base opts]
-   (let [ms (or (::max-scale opts) 10)
-         rs (or (::radix-separator opts) \.)
-         mapval (->> (or (::digit-mapping opts)
-                         "0123456789abcdef")
-                     (partial nth))
-         [i f] (to-base-seq d base)]
-     (->> [(map mapval i) [rs] (map mapval (take ms f))]
-          (apply concat)
-          (string/join "")))))
+    (position-str d base opts)))
 
 ;;
 ;; convenience fns
