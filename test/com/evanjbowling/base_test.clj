@@ -21,13 +21,13 @@
            (b/to-base2 1048576M)))))
 
 (deftest test-input-handling
-    (are [d base expected] (= expected (b/to-base d base))
-      1.25       16  "1.4₁₆"
-      1.25       16M "1.4₁₆"
-      1.25M      16M "1.4₁₆"
-      (int 12)   16  "C.0₁₆"
-      (long 12)  16  "C.0₁₆"
-      (short 12) 16  "C.0₁₆"))
+  (are [d base expected] (= expected (b/to-base d base))
+    1.25       16  "1.4₁₆"
+    1.25       16M "1.4₁₆"
+    1.25M      16M "1.4₁₆"
+    (int 12)   16  "C.0₁₆"
+    (long 12)  16  "C.0₁₆"
+    (short 12) 16  "C.0₁₆"))
 
 (deftest test-to-base-hand-verified
   (let [opts {::b/base-indicator :none}]

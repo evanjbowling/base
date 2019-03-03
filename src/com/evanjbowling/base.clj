@@ -21,26 +21,26 @@
 (defn ^:private position-str
   [d base opts]
   (let [ms (or (::max-scale opts) 10)
-         rs (or (::radix-separator opts) \.)
-         bi (or (::base-indicator opts) :suffix)
-         mapval (->> (or (::digit-mapping opts)
-                         (fmt/digit-mapping base))
-                     (partial nth))
-         [i f] (to-base-seq d base)]
-     (->> [(map mapval i) 
-           [rs]
-           (map mapval (take ms f))
-           (when (= :suffix bi) [(fmt/sub base)])]
-          (remove nil?)
-          (apply concat)
-          (string/join ""))))
+        rs (or (::radix-separator opts) \.)
+        bi (or (::base-indicator opts) :suffix)
+        mapval (->> (or (::digit-mapping opts)
+                        (fmt/digit-mapping base))
+                    (partial nth))
+        [i f] (to-base-seq d base)]
+    (->> [(map mapval i)
+          [rs]
+          (map mapval (take ms f))
+          (when (= :suffix bi) [(fmt/sub base)])]
+         (remove nil?)
+         (apply concat)
+         (string/join ""))))
 
 (defn to-base
   "Convert decimal value to other base representation."
   ([d base]
    (to-base d base {}))
   ([d base opts]
-    (position-str d base opts)))
+   (position-str d base opts)))
 
 ;;
 ;; convenience fns
