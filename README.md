@@ -1,5 +1,7 @@
 # base
 [![Build Status](https://travis-ci.org/evanjbowling/base.svg?branch=master)](https://travis-ci.org/evanjbowling/base)
+[![Dependencies Status](https://versions.deps.co/evanjbowling/base/status.svg)](https://versions.deps.co/evanjbowling/base)
+
 [![Clojars Project](https://img.shields.io/clojars/v/com.evanjbowling/base.svg)](https://clojars.org/com.evanjbowling/base)
 
 A tiny Clojure library for converting decimals to different base representations.
@@ -17,10 +19,16 @@ Output:
 
 ## Install
 
-via Leiningen:
+Leiningen/Boot:
 
+```clojure
+[com.evanjbowling/base "0.1.0"]
 ```
-[com.evanjbowling/base "0.1.0-SNAPSHOT"]
+
+Clojure CLI/deps.edn:
+
+```clojure
+com.evanjbowling/base {:mvn/version "0.1.0"}
 ```
 
 ## Use
@@ -29,7 +37,16 @@ via Leiningen:
 (require '[com.evanjbowling.base :as b])
 ```
 
-There are two main functions: `to-base` and `to-base-seq`. The first produces a string representation while the second exposes the values as a sequence to support rendering in other formats (e.g. HTML).
+There are two main functions:
+
+* `to-base` - returns a string representation
+* `to-base-seq` - returns a sequence of numeric values (For every value v, 0 <= v < base) with two parts: integer sequence and fractional sequence.
+
+The sequence version is meant to be useful for exploring the whole sequence (the fractional sequence may be infinite) or for encoding the values in another format (e.g. HTML).
+
+### String Representations
+
+The `to-base` function maps every digit value in the sequence to the relevant character for the base.
 
 Convert simple decimals:
 
