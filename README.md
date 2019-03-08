@@ -77,6 +77,7 @@ Custom digit mapping:
 * review rational support
 * document and expand options map with formatting options (add sequence format)
 * repeating fractional sequence detection
+* branch with spec usage
 
 ## Dedicate
 
