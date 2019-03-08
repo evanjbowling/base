@@ -33,6 +33,8 @@ com.evanjbowling/base {:mvn/version "0.1.0"}
 
 ## Use
 
+Review the [Docs](https://evanjbowling.github.io/base/doc/).
+
 ```clojure
 (require '[com.evanjbowling.base :as b])
 ```
