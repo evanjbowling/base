@@ -75,6 +75,7 @@ Custom digit mapping:
 * review convenience fns, add common name aliases
 * proper docs
 * review rational support
+  * repeating rationals not currently supported
 * document and expand options map with formatting options (add sequence format)
 * repeating fractional sequence detection
 * branch with spec usage
