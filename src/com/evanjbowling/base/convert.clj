@@ -1,88 +1,78 @@
 (ns com.evanjbowling.base.convert
   (:require
-   [clojure.math.numeric-tower :as math])
-  (:import
-   (java.math BigDecimal)))
+   [clojure.math.numeric-tower   :as math]
+   [clojure.string               :as string]
+   [com.evanjbowling.base.format :as fmt]))
 
-(defn split'
-  "Split decimal into integral and fractional parts.
-  Support arbitrary precision."
-  [^BigDecimal d]
-  (let [i (.divideToIntegralValue d 1M)]
-    {:com.evanjbowling.base/integer (bigint i)
-     :com.evanjbowling.base/fraction (-' d i)}))
+(defn ^:private nd
+  "Returns sequence of two values: numerator n
+  and denominator d for input x."
+  [x]
+  (if (integer? x) [x 1]
+      (let [r (rationalize x)]
+        (if (integer? r) [r 1]
+            ((juxt numerator denominator) r)))))
 
-(defn split
-  "Split decimal into integral and fractional parts.
-  Will throw if integer portion is larger than a long
-  can hold."
-  [^BigDecimal d]
-  (let [i (.divideToIntegralValue d 1M)]
-    {:com.evanjbowling.base/integer (.longValueExact i)
-     :com.evanjbowling.base/fraction (-' d i)}))
+(defn max-exponent-index
+  "Max exponent imdex in base zero to represent
+  integer i in base b."
+  [i b]
+  (let [i (cond-> i (neg? i) (*' -1))]
+    (loop [e 1, v 1N]
+      (if (< i (*' v b))
+        (dec e)
+        (recur (inc e) (*' v b))))))
 
-(defn ^:private max-digit
-  [i base e]
-  (loop [d 1]
-    (if (and (<= (*' d (math/expt base e)) i)
-             (< i (*' (inc d) (math/expt base e))))
-      d
-      (recur (inc d)))))
+(defn int-seq
+  "Lazy sequence of values to represent integer i
+  in base b ordered in big endian."
+  ([i b]
+   (lazy-seq (int-seq i b (max-exponent-index i b))))
+  ([i b e]
+   (if (< e 0)
+     []
+     (if (< i (math/expt b e))
+       (cons 0 (lazy-seq (int-seq i b (dec e))))
+       (loop [d (- b 1)]
+         (let [dv (*' d (math/expt b e))]
+           (if (<= dv i)
+             (cons d
+                   (lazy-seq (int-seq (-' i dv)
+                                      b
+                                      (dec e))))
+             (recur (dec d)))))))))
 
-(defn ^:private int-to-base*
-  [i base]
-  (if (<= i (dec base))
-    {0 i}
-    (loop [e 1
-           prev-max (dec base)]
-      (let [max-val-w-curr-e (+' prev-max
-                                 (*' (dec base)
-                                     (math/expt base e)))]
-        (if (<= i max-val-w-curr-e)
-          {e (max-digit i base e)}
-          (recur (inc e) max-val-w-curr-e))))))
+(defn fraction-seq
+  [f b]
+  (lazy-seq
+   (let [f' (*' f b)]
+     (if-not (ratio? f')
+       [f']
+       (let [[n d] (nd f')]
+         (cons (quot n d)
+               (fraction-seq (/ (rem n d) d) b)))))))
 
-(defn ^:private reduce-digits
-  [digits]
-  (loop [digit-indices (if (empty? digits)
-                         (range 1)
-                         (->> digits
-                              keys
-                              (apply max)
-                              inc
-                              range))
-         result []]
-    (if (empty? digit-indices)
-      result
-      (let [digit
-            (if-let [d (get digits (first digit-indices))]
-              d
-              0)]
-        (recur (rest digit-indices) (cons digit result))))))
+(defn rational-to-base
+  [r b]
+  (let [[n d] (nd r)]
+    [(int-seq (quot n d) b)
+     (fraction-seq (/ (rem n d) d) b)]))
 
-(defn int-to-base
-  "Convert integer portion to other base."
-  [i base]
-  (loop [left i
-         digits {}]
-    (if (= 0 left)
-      (reduce-digits digits)
-      (let [next-digit (int-to-base* left base)
-            [e d] ((juxt (comp first keys) (comp first vals)) next-digit)]
-        (recur (-' left (*' d (math/expt base e)))
-               (merge digits next-digit))))))
+(defn position-str
+  [d base opts]
+  (let [ms (or (:com.evanjbowling.base/max-scale opts) 10)
+        rs (or (:com.evanjbowling.base/radix-separator opts) \.)
+        bi (or (:com.evanjbowling.base/base-indicator opts)
+               :suffix)
+        mapval (->> (or (:com.evanjbowling.base/digit-mapping opts)
+                        (fmt/digit-mapping base))
+                    (partial nth))
+        [i f] (rational-to-base d base)]
+    (->> [(map mapval i)
+          [rs]
+          (map mapval (take ms f))
+          (when (= :suffix bi) [(fmt/sub base)])]
+         (remove nil?)
+         (apply concat)
+         (string/join ""))))
 
-(defn fraction-to-base
-  "Returns a lazy sequence of the fractional values where
-  each v >= 0 and < base. Note that this may be an infinite
-  sequence."
-  ([^BigDecimal d base]
-   (lazy-seq
-    (if (= 0M d)
-      [0]
-      (let [{i :com.evanjbowling.base/integer
-             f :com.evanjbowling.base/fraction}
-            (split (*' base d))]
-        (cons i (if (= 0M f)
-                  []
-                  (fraction-to-base f base))))))))

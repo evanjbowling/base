@@ -18,13 +18,16 @@
   (testing "base 2"
     (is (= "100000000000000000000.0₂"
            (b/to-base 1048576M 2)
-           (b/to-base2 1048576M)))))
+           (b/to-base2 1048576M))))
+  (testing "repeating decimal rational support"
+    (is (= "0.1₃" (b/to-base (/ 1 3) 3)))))
 
 (deftest test-input-handling
   (are [d base expected] (= expected (b/to-base d base))
     1.25       16  "1.4₁₆"
     1.25       16M "1.4₁₆"
     1.25M      16M "1.4₁₆"
+    (/ 5 4)    16M "1.4₁₆"
     (int 12)   16  "C.0₁₆"
     (long 12)  16  "C.0₁₆"
     (short 12) 16  "C.0₁₆"))
