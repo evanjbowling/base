@@ -24,25 +24,25 @@
 ;; convenience fns
 ;;
 
-(defn to-base2
+(defn ^:deprecated to-base2
   "Convert decimal to binary string representation.
   Second form takes options map. See to-base for details."
   ([d] (to-base2 d {}))
   ([d opts] (to-base d 2 (assoc opts ::digit-mapping fmt/base2))))
 
-(defn to-base8
+(defn ^:deprecated to-base8
   "Convert decimal to octal string representation.
   Second form takes options map. See to-base for details."
   ([d] (to-base8 d {}))
   ([d opts] (to-base d 8 (assoc opts ::digit-mapping fmt/base8))))
 
-(defn to-base16
+(defn ^:deprecated to-base16
   "Convert decimal to hexadecimal string representation.
   Second form takes options map. See to-base for details."
   ([d] (to-base16 d {}))
   ([d opts] (to-base d 16 (assoc opts ::digit-mapping fmt/base16))))
 
-(defn to-base32
+(defn ^:deprecated to-base32
   "Convert decimal to base 32 string representation.
 
   See https://tools.ietf.org/html/rfc4648#page-8
@@ -51,33 +51,33 @@
   ([d] (to-base32 d {}))
   ([d opts] (to-base d 32 (assoc opts ::digit-mapping fmt/base32))))
 
-(defn to-base32hex
+(defn ^:deprecated to-base32hex
   ([d] (to-base32hex d {}))
   ([d opts] (to-base d 32 (assoc opts ::digit-mapping fmt/base32hex))))
 
-(defn to-base36
+(defn ^:deprecated to-base36
   ([d] (to-base36 d {}))
   ([d opts] (to-base d 36 (assoc opts ::digit-mapping fmt/base36))))
 
-(defn to-base58
+(defn ^:deprecated to-base58
   ([d] (to-base58 d {}))
   ([d opts] (to-base d 58 (assoc opts ::digit-mapping fmt/base58))))
 
-(defn to-base64
+(defn ^:deprecated to-base64
   ([d] (to-base64 d {}))
   ([d opts] (to-base d 64 (assoc opts ::digit-mapping fmt/base64))))
 
-(defn to-base64url
+(defn ^:deprecated to-base64url
   ([d] (to-base64url d {}))
   ([d opts] (to-base d 64 (assoc opts ::digit-mapping fmt/base64url))))
 
-(defn hex-to-base64url
+(defn ^:deprecated hex-to-base64url
   "Convert hexadecimal string to base64url."
-  [s]
+  [^String s]
   (-> (to-base64url (BigInteger. s 16))
       (string/replace  #".A₆₄" "")))
 
-(defn uuid-to-base64url
+(defn ^:deprecated uuid-to-base64url
   "Convert uuid to base64url."
   [u]
   (let [s (cond-> u
