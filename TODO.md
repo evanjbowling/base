@@ -7,3 +7,6 @@ move non-deprecated methods to core
 update project.clj with profiles for diff clojure versions
 update project.clj with plugins moved to dev profile
 
+create 1.0.0 branch
+update `to-base` return signature to [[integer] [fraction prefix] [fraction repetend]]
+
