@@ -1,12 +1,13 @@
 (ns com.evanjbowling.base.convert
   (:require
    [clojure.math.numeric-tower   :as math]
+   [clojure.pprint               :as pprint]
    [clojure.string               :as string]
    [com.evanjbowling.base.format :as fmt]))
 
 (defn ^:private nd
-  "Returns sequence of two values: numerator n
-  and denominator d for input x."
+  "Returns [numerator denominator] for x.
+  Handles rationals, integers and big decimals."
   [x]
   (if (integer? x) [x 1]
       (let [r (rationalize x)]
@@ -14,7 +15,7 @@
             ((juxt numerator denominator) r)))))
 
 (defn max-exponent-index
-  "Max exponent imdex in base zero to represent
+  "Max exponent index in base zero to represent
   integer i in base b."
   [i b]
   (let [i (cond-> i (neg? i) (*' -1))]
@@ -51,6 +52,51 @@
        (let [[n d] (nd f')]
          (cons (quot n d)
                (fraction-seq (/ (rem n d) d) b)))))))
+
+(defn next-digit
+  "Compute the next fractional digit and remaining
+  fraction."
+  [fraction b]
+  (let [f' (*' fraction b)
+        [n d] (nd f')]
+    {:integer (quot n d)
+     :remaining (/ (rem n d) d)}))
+
+(defn split-prefix-repetend
+  [values remaining]
+  (let [repetend-start (:index (get values remaining))
+        values' (->> (vals values)
+                     (sort-by :index))]
+    [(->> (filter #(< (:index %) repetend-start) values')
+          (map :integer))
+     (->> (remove #(< (:index %) repetend-start) values')
+          (map :integer))]))
+
+(defn new-fraction-seq
+  "Returns [[prefix][repetend]]."
+  [fraction b]
+  (loop [values {}
+         curr fraction]
+    (let [{:keys [integer remaining]} (next-digit curr b)]
+      (cond
+        ;; sequence termination
+        (zero? remaining)
+        [(->> (into [] values)
+              (sort-by :index)
+              (map :integer)
+              ((fn [is] (conj is integer))))
+         []]
+
+        ;; sequence repetition detected
+        (contains? values remaining)
+        (split-prefix-repetend values remaining)
+
+        ;; otherwise, keep looping
+        :else (recur (assoc values remaining
+                            {:integer integer
+                             :remaining remaining
+                             :index (-> values keys count)})
+                     remaining)))))
 
 (defn rational-to-base
   [r b]
