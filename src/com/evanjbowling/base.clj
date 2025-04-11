@@ -7,13 +7,14 @@
 (defn to-seq
   "Convert decimal value d to sequence of integer sequences
   in base like:
-   
+
    [[integer seq] [fractional prefix] [fractional repetend]]
-  
+
   e.g. (to-seq 4 2)    => [[1 0 0] [] []]
+  e.g. (to-seq 4.5 2) => [[1 0 0] [1] []]
   e.g. (to-seq 4.25 2) => [[1 0 0] [0 1] []]
-  e.g. (to-seq 4.25 2) => [[1 0 0] [0 1] []]
-   
+  e.g. (to-seq 1/3 3) => [[0] [] [1]]
+ 
   where each sequence represents a pa seq of values for the 
   integer and a seq of values for the fraction. Note
   that the fraction sequence may be an infinite

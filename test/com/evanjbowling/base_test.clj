@@ -3,6 +3,12 @@
    [clojure.test          :refer [deftest testing is are]]
    [com.evanjbowling.base :as b]))
 
+(deftest test-to-seq
+  (is (= [[1 0 0] [] []] (b/to-seq 4 2)))
+  (is (= [[1 0 0] [1] []] (b/to-seq 4.5 2)))
+  (is (= [[1 0 0] [0 1] []] (b/to-seq 4.25 2)))
+  (is (= [[0] [1] []] (b/to-seq 1/3 3))))
+
 (deftest test-to-base-seq-hand-verified
   (are [d base expected]
        (= expected (b/to-base-seq d base))
