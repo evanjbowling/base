@@ -27,7 +27,7 @@
       (< base 11) (subs O-9 0 base)
       (= base 58) base58
       (= base 64) base64url
-      :default (subs default 0 base))))
+      :else (subs default 0 base))))
 
 (defn sub
   "Convert integer n to subscript string."

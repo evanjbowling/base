@@ -1,7 +1,6 @@
 (ns com.evanjbowling.base.convert
   (:require
    [clojure.math.numeric-tower   :as math]
-   [clojure.pprint               :as pprint]
    [clojure.string               :as string]
    [com.evanjbowling.base.format :as fmt]))
 
@@ -72,7 +71,7 @@
      (->> (remove #(< (:index %) repetend-start) values')
           (map :integer))]))
 
-(defn new-fraction-seq
+(defn pr-fraction-seq
   "Returns [[prefix][repetend]]."
   [fraction b]
   (loop [values {}
@@ -103,6 +102,13 @@
   (let [[n d] (nd r)]
     [(int-seq (quot n d) b)
      (fraction-seq (/ (rem n d) d) b)]))
+
+(defn pr-rational-to-base
+  [r b]
+  (let [[n d] (nd r)]
+    (concat
+     [(int-seq (quot n d) b)]
+     (pr-fraction-seq (/ (rem n d) d) b))))
 
 (defn position-str
   [d base opts]

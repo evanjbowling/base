@@ -1,6 +1,6 @@
 (ns com.evanjbowling.base.convert-test
   (:require
-   [clojure.test :refer [deftest testing is are]]
+   [clojure.test :refer [deftest are]]
    [com.evanjbowling.base.convert :as c]))
 
 (deftest test-nd

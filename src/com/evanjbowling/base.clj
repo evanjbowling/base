@@ -4,6 +4,23 @@
    [com.evanjbowling.base.convert :as c]
    [com.evanjbowling.base.format  :as fmt]))
 
+(defn to-seq
+  "Convert decimal value d to sequence of integer sequences
+  in base like:
+   
+   [[integer seq] [fractional prefix] [fractional repetend]]
+  
+  e.g. (to-seq 4 2)    => [[1 0 0] [] []]
+  e.g. (to-seq 4.25 2) => [[1 0 0] [0 1] []]
+  e.g. (to-seq 4.25 2) => [[1 0 0] [0 1] []]
+   
+  where each sequence represents a pa seq of values for the 
+  integer and a seq of values for the fraction. Note
+  that the fraction sequence may be an infinite
+    sequence."
+  [d base]
+  (c/pr-rational-to-base d base))
+
 (defn to-base-seq
   "Convert decimal value to other base representation
   as a pair of sequences: a seq of values for the 
@@ -13,7 +30,7 @@
   [d base]
   (c/rational-to-base d base))
 
-(defn to-base
+(defn ^:deprecated to-base
   "Convert decimal value to other base representation."
   ([d base]
    (to-base d base {}))
